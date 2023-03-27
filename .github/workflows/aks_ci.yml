@@ -15,35 +15,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Install Azure cli
-      run: |
-        sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-        curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-        AZ_REPO=$(lsb_release -cs)
-        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-        sudo apt-get update
-        sudo apt-get install azure-cli
       
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    # Use kubelogin to configure your kubeconfig for Azure auth
-    - name: Set up kubelogin for non-interactive login
-      uses: azure/use-kubelogin@v1
-      with:
-        kubelogin-version: 'v0.0.25'
-
-      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
-    - name: Get K8s context
-      uses: azure/aks-set-context@v3
-      with:
-        resource-group: ${{ env.RESOURCE_GROUP }}
-        cluster-name: ${{ env.CLUSTER_NAME }}
-        admin: 'false'
-        use-kubelogin: 'true'
-
+  
     - name: Deploy to AKS
       uses: azure/k8s-deploy@v1
       with:
