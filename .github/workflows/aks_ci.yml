@@ -35,8 +35,8 @@ on:
   workflow_dispatch:
 
 env:
-  RESOURCE_GROUP: "aks_rg"
-  CLUSTER_NAME: "my-kubes"
+  RESOURCE_GROUP: "kube_resource"
+  CLUSTER_NAME: "az_kube"
 
 jobs:
   buildImage:
