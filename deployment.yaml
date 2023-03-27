@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: flask-deployment
+  labels:
+    app: flask-apps
+  namespace: djangoapplication
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask-apps
+
+  template:
+    metadata:
+      labels:
+        app: flask-apps
+    spec:
+      containers:
+      - name: flask-ctr
+        image: rahulshukla0007/flask_api:version1
+        ports:
+        - containerPort: 5000
