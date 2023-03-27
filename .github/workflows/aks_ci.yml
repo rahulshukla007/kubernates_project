@@ -70,6 +70,11 @@ jobs:
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+         kubeconfig: ${{ secrets.KUBECONFIG }}
 
       # Deploys application based on given manifest file
       - name: Deploys application
