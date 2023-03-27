@@ -11,6 +11,10 @@ env:
 
 jobs:
   build-and-deploy:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
