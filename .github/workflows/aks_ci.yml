@@ -75,6 +75,7 @@ jobs:
         uses: azure/setup-kubectl@v1
         with:
          kubeconfig: ${{ secrets.KUBECONFIG }}
+         context: az_kube
 
       # Deploys application based on given manifest file
       - name: Deploys application
