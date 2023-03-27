@@ -1,0 +1,44 @@
+name: Deploy to AKS
+on:
+  push:
+    branches:
+      - master
+      
+env:
+ 
+  RESOURCE_GROUP: "aks_rg"
+  CLUSTER_NAME: "my-kubes"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    # Use kubelogin to configure your kubeconfig for Azure auth
+    - name: Set up kubelogin for non-interactive login
+      uses: azure/use-kubelogin@v1
+      with:
+        kubelogin-version: 'v0.0.25'
+
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+    - name: Get K8s context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ env.RESOURCE_GROUP }}
+        cluster-name: ${{ env.CLUSTER_NAME }}
+        admin: 'false'
+        use-kubelogin: 'true'
+
+    - name: Deploy to AKS
+      uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          deployment.yaml
+          service.yaml
+        namespace: default
