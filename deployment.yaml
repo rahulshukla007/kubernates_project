@@ -20,6 +20,6 @@ spec:
     spec:
       containers:
       - name: flask-ctr
-        image: rahulshukla0007/flask_api:version1
+        image: rahulacr007.azurecr.io/flask-container:github.sha
         ports:
         - containerPort: 5000

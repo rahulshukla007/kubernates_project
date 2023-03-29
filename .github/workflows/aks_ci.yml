@@ -3,7 +3,7 @@
 # This workflow assumes you have already created the target AKS cluster and have created an Azure Container Registry (ACR)
 # The ACR should be attached to the AKS cluster
 # For instructions see:
-#   - https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portals
+#   - https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal
 #   - https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
 #   - https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli#configure-acr-integration-for-existing-aks-clusters
 #   - https://github.com/Azure/aks-create-action
@@ -35,8 +35,11 @@ on:
   workflow_dispatch:
 
 env:
-  RESOURCE_GROUP: "kube_resource"
-  CLUSTER_NAME: "az_kube"
+  AZURE_CONTAINER_REGISTRY: "rahulacr007"
+  CONTAINER_NAME: "flask-container"
+  RESOURCE_GROUP: "my_resource"
+  CLUSTER_NAME: "my_kube_cluster"
+ 
 
 jobs:
   buildImage:
@@ -53,7 +56,12 @@ jobs:
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
+      # Builds and pushes an image up to your Azure Container Registry
+      - name: Build and push image to ACR
+        run: |
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} .
+
   deploy:
     permissions:
       actions: read
@@ -70,7 +78,7 @@ jobs:
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
       # Use kubelogin to configure your kubeconfig for Azure auth
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
@@ -95,4 +103,5 @@ jobs:
             deployment.yaml
             service.yaml
           namespace: djangoapplication
-          
+
+            
