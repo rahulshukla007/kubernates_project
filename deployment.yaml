@@ -23,3 +23,4 @@ spec:
         image: rahulacr007.azurecr.io/flask-container:github.sha
         ports:
         - containerPort: 5000
+
